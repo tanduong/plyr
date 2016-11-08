@@ -25,7 +25,7 @@
     'use strict';
 
     // Globals
-    var fullscreen, 
+    var fullscreen,
     scroll = { x: 0, y: 0 },
 
     // Default config
@@ -36,8 +36,8 @@
         loop:                   false,
         seekTime:               10,
         volume:                 5,
-        volumeMin:              0, 
-        volumeMax:              10, 
+        volumeMin:              0,
+        volumeMax:              10,
         volumeStep:             1,
         duration:               null,
         displayDuration:        true,
@@ -499,9 +499,9 @@
         }
 
         // Create and dispatch the event
-        var event = new CustomEvent(eventName, { 
+        var event = new CustomEvent(eventName, {
             bubbles:    bubbles,
-            detail:     properties 
+            detail:     properties
         });
 
         // Dispatch the event
@@ -575,7 +575,7 @@
     // Check variable types
     var _is = {
         object: function(input) {
-            return input !== null && typeof(input) === 'object'; 
+            return input !== null && typeof(input) === 'object';
         },
         array: function(input) {
             return input !== null && typeof(input) === 'object' && input.constructor === Array;
@@ -1429,13 +1429,13 @@
             if (!value) {
                 // Key wasn't set (or had been cleared), move along
                 return;
-            } 
+            }
             else if (/^\d+(\.\d+)?$/.test(value)) {
                 // If value is a number, it's probably volume from an older
                 // version of plyr. See: https://github.com/Selz/plyr/pull/313
                 // Update the key to be JSON
                 _updateStorage({volume: parseFloat(value)});
-            } 
+            }
             else {
                 // Assume it's JSON from this or a later version of plyr
                 plyr.storage = JSON.parse(value);
@@ -1627,8 +1627,12 @@
                     _injectScript(config.urls.deezer.api);
 
                     window.dzAsyncInit = function() {
+                        if(!window.YOUR_DEEZER_APP_ID) {
+                            return console.error("Please store your Deezer App Id to window.YOUR_DEEZER_APP_ID");
+                        }
+
                         DZ.init({
-                            appId: 'APP_ID',
+                            appId: window.YOUR_DEEZER_APP_ID,
                             channelUrl: window.location.href + 'channel.html',
                             player: {
                                 onload : function(){
@@ -2012,7 +2016,7 @@
 
             plyr.media.paused = true;
             plyr.media.currentTime = 0;
-            
+
             _embedReady();
         }
 
@@ -2090,7 +2094,7 @@
                 targetTime = duration;
             }
 
-            // Update seek range and progress 
+            // Update seek range and progress
             _updateSeekDisplay(targetTime);
 
             // Set the current time
@@ -2491,7 +2495,7 @@
             if (!plyr.supported.full) {
                 return;
             }
-            
+
             // Default to 0
             if (_is.undefined(value)) {
                 value = 0;
@@ -2585,7 +2589,7 @@
             _updateProgress(event);
         }
 
-        // Update seek range and progress 
+        // Update seek range and progress
         function _updateSeekDisplay(time) {
             // Default to 0
             if (!_is.number(time)) {
@@ -2595,7 +2599,7 @@
             var duration    = _getDuration(),
                 value       = _getPercentage(time, duration);
 
-            // Update progress 
+            // Update progress
             if (plyr.progress && plyr.progress.played) {
                 plyr.progress.played.value = value;
             }
@@ -2706,15 +2710,15 @@
                 }
             }
 
-            // If toggle is false or if we're playing (regardless of toggle), 
-            // then set the timer to hide the controls 
+            // If toggle is false or if we're playing (regardless of toggle),
+            // then set the timer to hide the controls
             if (!show || !plyr.media.paused) {
                 plyr.timers.hover = window.setTimeout(function() {
                     // If the mouse is over the controls (and not entering fullscreen), bail
                     if ((plyr.controls.pressed || plyr.controls.hover) && !isEnterFullscreen) {
                         return;
                     }
-                    
+
                     _toggleClass(plyr.container, config.classes.hideControls, true);
                 }, delay);
             }
@@ -3041,12 +3045,12 @@
                 _on(plyr.container, 'mouseenter mouseleave mousemove touchstart touchend touchcancel touchmove enterfullscreen', _toggleControls);
 
                 // Watch for cursor over controls so they don't hide when trying to interact
-                _on(plyr.controls, 'mouseenter mouseleave', function(event) { 
+                _on(plyr.controls, 'mouseenter mouseleave', function(event) {
                     plyr.controls.hover = event.type === 'mouseenter';
                 });
 
                  // Watch for cursor over controls so they don't hide when trying to interact
-                _on(plyr.controls, 'mousedown mouseup touchstart touchend touchcancel', function(event) { 
+                _on(plyr.controls, 'mousedown mouseup touchstart touchend touchcancel', function(event) {
                     plyr.controls.pressed = _inArray(['mousedown', 'touchstart'], event.type);
                 });
 
@@ -3598,8 +3602,8 @@
                 element.plyr = (Object.keys(instance).length ? instance : false);
 
                 // Callback
-                _triggerEvent(original, 'setup', true, { 
-                    plyr: element.plyr 
+                _triggerEvent(original, 'setup', true, {
+                    plyr: element.plyr
                 });
             }
 
